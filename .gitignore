@@ -1,0 +1,30 @@
+# Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse / VS Code
+.classpath
+.project
+.settings/
+.vscode/
+
+# Compiled and packaged files
+*.class
+*.jar
+*.war
+
+# Logs
+*.log
+
+# JaCoCo
+jacoco.exec
+
+# OS files
+.DS_Store
+Thumbs.db

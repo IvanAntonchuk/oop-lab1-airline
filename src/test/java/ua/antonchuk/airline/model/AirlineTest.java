@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -105,5 +106,71 @@ class AirlineTest {
         airline.addAirplane(new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5));
 
         assertEquals(150.2, airline.getTotalCargoCapacity(), DELTA);
+    }
+
+    @Test
+    void sortedByFlightRangeReturnsAscendingOrder() {
+        CombiAirplane combi = new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5);
+        airline.addAirplane(cargo);
+        airline.addAirplane(passenger);
+        airline.addAirplane(combi);
+
+        assertEquals(List.of(passenger, combi, cargo),
+                airline.getAirplanesSortedByFlightRange());
+    }
+
+    @Test
+    void sortedByFlightRangeDoesNotChangeOriginalOrder() {
+        airline.addAirplane(cargo);
+        airline.addAirplane(passenger);
+
+        airline.getAirplanesSortedByFlightRange();
+
+        assertEquals(List.of(cargo, passenger), airline.getAirplanes());
+    }
+
+    @Test
+    void sortedByFlightRangeOnEmptyAirlineReturnsEmptyList() {
+        assertTrue(airline.getAirplanesSortedByFlightRange().isEmpty());
+    }
+
+    @Test
+    void sortedByFlightRangeKeepsOrderOfEqualRanges() {
+        PassengerAirplane first = new PassengerAirplane("A", 5000, 2.0, 100);
+        PassengerAirplane second = new PassengerAirplane("B", 5000, 2.0, 120);
+        CargoAirplane shortRange = new CargoAirplane("C", 3000, 5.0, 20.0);
+        airline.addAirplane(first);
+        airline.addAirplane(second);
+        airline.addAirplane(shortRange);
+
+        assertEquals(List.of(shortRange, first, second),
+                airline.getAirplanesSortedByFlightRange());
+    }
+
+    @Test
+    void sortedListIsUnmodifiable() {
+        airline.addAirplane(passenger);
+        List<Airplane> sorted = airline.getAirplanesSortedByFlightRange();
+
+        assertThrows(UnsupportedOperationException.class, () -> sorted.add(cargo));
+    }
+
+    @Test
+    void sortedByCustomComparatorUsesGivenComparator() {
+        CombiAirplane combi = new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5);
+        airline.addAirplane(passenger);
+        airline.addAirplane(cargo);
+        airline.addAirplane(combi);
+
+        List<Airplane> sorted = airline.getAirplanesSortedBy(
+                Comparator.comparingDouble(Airplane::getFuelConsumption).reversed());
+
+        assertEquals(List.of(cargo, combi, passenger), sorted);
+    }
+
+    @Test
+    void sortedByRejectsNullComparator() {
+        assertThrows(IllegalArgumentException.class,
+                () -> airline.getAirplanesSortedBy(null));
     }
 }

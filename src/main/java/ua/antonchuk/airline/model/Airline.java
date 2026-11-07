@@ -1,6 +1,7 @@
 package ua.antonchuk.airline.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Airline {
@@ -40,5 +41,18 @@ public class Airline {
         return airplanes.stream()
                 .mapToDouble(Airplane::getCargoCapacity)
                 .sum();
+    }
+
+    public List<Airplane> getAirplanesSortedBy(Comparator<? super Airplane> comparator) {
+        if (comparator == null) {
+            throw new IllegalArgumentException("Comparator must not be null");
+        }
+        return airplanes.stream()
+                .sorted(comparator)
+                .toList();
+    }
+
+    public List<Airplane> getAirplanesSortedByFlightRange() {
+        return getAirplanesSortedBy(Comparator.comparingInt(Airplane::getFlightRange));
     }
 }

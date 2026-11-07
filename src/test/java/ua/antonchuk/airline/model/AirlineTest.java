@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AirlineTest {
 
+    private static final double DELTA = 1e-9;
+
     private Airline airline;
     private PassengerAirplane passenger;
     private CargoAirplane cargo;
@@ -75,5 +77,33 @@ class AirlineTest {
 
         assertEquals(1, snapshot.size());
         assertEquals(2, airline.getAirplanes().size());
+    }
+
+    @Test
+    void emptyAirlineHasZeroTotalPassengerCapacity() {
+        assertEquals(0, airline.getTotalPassengerCapacity());
+    }
+
+    @Test
+    void emptyAirlineHasZeroTotalCargoCapacity() {
+        assertEquals(0.0, airline.getTotalCargoCapacity(), DELTA);
+    }
+
+    @Test
+    void totalPassengerCapacitySumsAllAirplaneTypes() {
+        airline.addAirplane(passenger);
+        airline.addAirplane(cargo);
+        airline.addAirplane(new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5));
+
+        assertEquals(339, airline.getTotalPassengerCapacity());
+    }
+
+    @Test
+    void totalCargoCapacitySumsAllAirplaneTypes() {
+        airline.addAirplane(passenger);
+        airline.addAirplane(cargo);
+        airline.addAirplane(new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5));
+
+        assertEquals(150.2, airline.getTotalCargoCapacity(), DELTA);
     }
 }

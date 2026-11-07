@@ -29,4 +29,16 @@ public class Airline {
     public List<Airplane> getAirplanes() {
         return List.copyOf(airplanes);
     }
+
+    public int getTotalPassengerCapacity() {
+        return airplanes.stream()
+                .mapToInt(Airplane::getPassengerCapacity)
+                .sum();
+    }
+
+    public double getTotalCargoCapacity() {
+        return airplanes.stream()
+                .mapToDouble(Airplane::getCargoCapacity)
+                .sum();
+    }
 }

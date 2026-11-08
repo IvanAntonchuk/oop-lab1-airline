@@ -55,4 +55,18 @@ public class Airline {
     public List<Airplane> getAirplanesSortedByFlightRange() {
         return getAirplanesSortedBy(Comparator.comparingInt(Airplane::getFlightRange));
     }
+
+    public List<Airplane> findAirplanesByFuelConsumption(double min, double max) {
+        if (Double.isNaN(min) || Double.isNaN(max)) {
+            throw new IllegalArgumentException("Fuel consumption bounds must not be NaN");
+        }
+        if (min > max) {
+            throw new IllegalArgumentException(
+                    "Minimum must not be greater than maximum: " + min + " > " + max);
+        }
+        return airplanes.stream()
+                .filter(airplane -> airplane.getFuelConsumption() >= min
+                        && airplane.getFuelConsumption() <= max)
+                .toList();
+    }
 }

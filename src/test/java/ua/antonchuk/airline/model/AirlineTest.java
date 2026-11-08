@@ -173,4 +173,80 @@ class AirlineTest {
         assertThrows(IllegalArgumentException.class,
                 () -> airline.getAirplanesSortedBy(null));
     }
+
+    @Test
+    void findByFuelConsumptionReturnsAirplanesInsideRange() {
+        CombiAirplane combi = new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5);
+        airline.addAirplane(passenger);
+        airline.addAirplane(cargo);
+        airline.addAirplane(combi);
+
+        assertEquals(List.of(combi), airline.findAirplanesByFuelConsumption(3.0, 5.0));
+    }
+
+    @Test
+    void findByFuelConsumptionBoundsAreInclusive() {
+        CombiAirplane combi = new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5);
+        airline.addAirplane(passenger);
+        airline.addAirplane(cargo);
+        airline.addAirplane(combi);
+
+        assertEquals(List.of(passenger, combi),
+                airline.findAirplanesByFuelConsumption(2.5, 4.0));
+    }
+
+    @Test
+    void findByFuelConsumptionWithEqualBoundsFindsExactValue() {
+        CombiAirplane combi = new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5);
+        airline.addAirplane(passenger);
+        airline.addAirplane(combi);
+
+        assertEquals(List.of(combi), airline.findAirplanesByFuelConsumption(4.0, 4.0));
+    }
+
+    @Test
+    void findByFuelConsumptionReturnsEmptyListWhenNothingMatches() {
+        airline.addAirplane(passenger);
+        airline.addAirplane(cargo);
+
+        assertTrue(airline.findAirplanesByFuelConsumption(20.0, 30.0).isEmpty());
+    }
+
+    @Test
+    void findByFuelConsumptionOnEmptyAirlineReturnsEmptyList() {
+        assertTrue(airline.findAirplanesByFuelConsumption(0.0, 100.0).isEmpty());
+    }
+
+    @Test
+    void findByFuelConsumptionKeepsAirlineOrder() {
+        CombiAirplane combi = new CombiAirplane("Test Combi", 6000, 4.0, 150, 12.5);
+        airline.addAirplane(cargo);
+        airline.addAirplane(passenger);
+        airline.addAirplane(combi);
+
+        assertEquals(List.of(cargo, passenger, combi),
+                airline.findAirplanesByFuelConsumption(0.0, 100.0));
+    }
+
+    @Test
+    void findByFuelConsumptionReturnsUnmodifiableList() {
+        airline.addAirplane(passenger);
+        List<Airplane> found = airline.findAirplanesByFuelConsumption(0.0, 100.0);
+
+        assertThrows(UnsupportedOperationException.class, () -> found.add(cargo));
+    }
+
+    @Test
+    void findByFuelConsumptionRejectsMinGreaterThanMax() {
+        assertThrows(IllegalArgumentException.class,
+                () -> airline.findAirplanesByFuelConsumption(5.0, 2.0));
+    }
+
+    @Test
+    void findByFuelConsumptionRejectsNaNBounds() {
+        assertThrows(IllegalArgumentException.class,
+                () -> airline.findAirplanesByFuelConsumption(Double.NaN, 5.0));
+        assertThrows(IllegalArgumentException.class,
+                () -> airline.findAirplanesByFuelConsumption(1.0, Double.NaN));
+    }
 }

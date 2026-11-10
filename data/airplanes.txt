@@ -1,0 +1,12 @@
+# PASSENGER: type,model,range_km,fuel_t_per_h,passengers
+# CARGO:     type,model,range_km,fuel_t_per_h,cargo_t
+# COMBI:     type,model,range_km,fuel_t_per_h,passengers,cargo_t
+PASSENGER,Boeing 737-800,5400,2.5,189
+PASSENGER,Airbus A320,6100,2.4,180
+PASSENGER,Embraer E190,4500,1.7,100
+PASSENGER,Boeing 777-300ER,13650,7.5,396
+PASSENGER,Airbus A380-800,15200,11.0,555
+CARGO,Boeing 747-8F,8130,10.5,137.7
+CARGO,Antonov An-124,4800,11.0,120.0
+CARGO,Boeing 767-300F,6025,5.5,52.7
+COMBI,Boeing 747-400 Combi,12800,10.5,266,45.0
